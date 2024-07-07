@@ -20,6 +20,24 @@ export class TextNodeStub {
   private _fontName: FontName;
   private _characters: string;
   private _textAutoResize: string;
+  private _textStyleId: string | PluginAPI["mixed"];
+  get textStyleId() {
+    return this._textStyleId;
+  }
+  set textStyleId(textStyleId: string | PluginAPI["mixed"]) {
+    throw new Error(`Error: Cannot set textStyleId`);
+  }
+  setTextStyleIdAsync(styleId: string) {
+    if (this.config.simulateErrors && !Fonts.isFontLoaded(this.fontName)) {
+      throw new Error(
+        `Error: font is not loaded ${this.fontName.family} ${this.fontName.style}`
+      );
+    }
+
+    this._textStyleId = styleId;
+    return Promise.resolve();
+  }
+
   get fontName() {
     return this._fontName || defaultFont;
   }
