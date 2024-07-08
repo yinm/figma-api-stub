@@ -38,6 +38,8 @@ export class TextNodeStub {
     return Promise.resolve();
   }
 
+  setRangeListOptions(start: number, end: number, options: TextListOptions) {}
+
   get fontName() {
     return this._fontName || defaultFont;
   }
@@ -130,7 +132,7 @@ export class TextNodeStub {
     this._characters = [
       this._characters.slice(0, start),
       characters,
-      this._characters.slice(start),
+      this._characters.slice(start)
     ].join("");
   }
 }
@@ -194,7 +196,7 @@ export class TextSublayerNode {
     this._characters = [
       this._characters.slice(0, start),
       characters,
-      this._characters.slice(start),
+      this._characters.slice(start)
     ].join("");
   }
 
@@ -355,9 +357,9 @@ export class PageNodeStub {
           color: {
             r: 0.9607843160629272,
             g: 0.9607843160629272,
-            b: 0.9607843160629272,
-          },
-        },
+            b: 0.9607843160629272
+          }
+        }
       ]
     );
   }
@@ -418,8 +420,8 @@ function cloneChildren(node) {
   clone.pluginData = {};
   clone.sharedPluginData = {};
   if ("children" in node) {
-    clone.children = node.children.map((child) => cloneChildren(child));
-    clone.children.forEach((child) => {
+    clone.children = node.children.map(child => cloneChildren(child));
+    clone.children.forEach(child => {
       child.parent = clone;
     });
   }
@@ -433,8 +435,8 @@ export class ComponentNodeStub {
   children = [];
   createInstance() {
     const instance = new InstanceNodeStub(this.config);
-    instance.children = this.children.map((child) => cloneChildren(child));
-    instance.children.forEach((child) => {
+    instance.children = this.children.map(child => cloneChildren(child));
+    instance.children.forEach(child => {
       child.parent = this;
     });
     // instance.pluginData = {};
