@@ -21,6 +21,7 @@ export class TextNodeStub {
   private _characters: string;
   private _textAutoResize: string;
   private _textStyleId: string | PluginAPI["mixed"];
+  private _rangeListOptions: TextListOptions;
   get textStyleId() {
     return this._textStyleId;
   }
@@ -38,7 +39,45 @@ export class TextNodeStub {
     return Promise.resolve();
   }
 
-  setRangeListOptions(start: number, end: number, options: TextListOptions) {}
+  getRangeListOptions(start: number, end: number) {
+    if (this.config.simulateErrors && start < 0) {
+      throw new Error(`Error: Expected "start" to have value >=0`);
+    }
+    if (this.config.simulateErrors && end < 0) {
+      throw new Error(`Error: Expected "end" to have value >=0`);
+    }
+    if (this.config.simulateErrors && end > this._characters.length) {
+      throw new Error(
+        `Error: Range outside of available characters. 'start' must be less than node.characters.length and 'end' must be less than or equal to node.characters.length`
+      );
+    }
+    if (this.config.simulateErrors && end === start) {
+      throw new Error(
+        `Error: Empty range selected. 'end' must be greater than 'start'`
+      );
+    }
+    return this._rangeListOptions || "NONE";
+  }
+
+  setRangeListOptions(start: number, end: number, options: TextListOptions) {
+    if (this.config.simulateErrors && start < 0) {
+      throw new Error(`Error: Expected "start" to have value >=0`);
+    }
+    if (this.config.simulateErrors && end < 0) {
+      throw new Error(`Error: Expected "end" to have value >=0`);
+    }
+    if (this.config.simulateErrors && end > this._characters.length) {
+      throw new Error(
+        `Error: Range outside of available characters. 'start' must be less than node.characters.length and 'end' must be less than or equal to node.characters.length`
+      );
+    }
+    if (this.config.simulateErrors && end === start) {
+      throw new Error(
+        `Error: Empty range selected. 'end' must be greater than 'start'`
+      );
+    }
+    this._rangeListOptions = options;
+  }
 
   get fontName() {
     return this._fontName || defaultFont;
@@ -132,7 +171,7 @@ export class TextNodeStub {
     this._characters = [
       this._characters.slice(0, start),
       characters,
-      this._characters.slice(start)
+      this._characters.slice(start),
     ].join("");
   }
 }
@@ -196,7 +235,7 @@ export class TextSublayerNode {
     this._characters = [
       this._characters.slice(0, start),
       characters,
-      this._characters.slice(start)
+      this._characters.slice(start),
     ].join("");
   }
 
@@ -357,9 +396,9 @@ export class PageNodeStub {
           color: {
             r: 0.9607843160629272,
             g: 0.9607843160629272,
-            b: 0.9607843160629272
-          }
-        }
+            b: 0.9607843160629272,
+          },
+        },
       ]
     );
   }
@@ -420,8 +459,8 @@ function cloneChildren(node) {
   clone.pluginData = {};
   clone.sharedPluginData = {};
   if ("children" in node) {
-    clone.children = node.children.map(child => cloneChildren(child));
-    clone.children.forEach(child => {
+    clone.children = node.children.map((child) => cloneChildren(child));
+    clone.children.forEach((child) => {
       child.parent = clone;
     });
   }
@@ -435,8 +474,8 @@ export class ComponentNodeStub {
   children = [];
   createInstance() {
     const instance = new InstanceNodeStub(this.config);
-    instance.children = this.children.map(child => cloneChildren(child));
-    instance.children.forEach(child => {
+    instance.children = this.children.map((child) => cloneChildren(child));
+    instance.children.forEach((child) => {
       child.parent = this;
     });
     // instance.pluginData = {};
